@@ -1,28 +1,24 @@
 <?php
-include_once "db_conn.php";
+include_once *db_conn.php";
+$item_name = $_POST['new_product'];
+$item_price = $_POST['newitem_price'];
 
+$sql = "IINSERT INTO products (item_name, item_price) VALUES (?, ?)";
 
-if(isset($_POST['p_item_id'])){
-    $table = "products";
-    
-    $p_item_id  = $_POST['p_item_id'];
-    $p_item_name = $_POST['p_item_name'];
-    $p_item_price = $_POST['p_item_price'];
-    
-    
-    $fields = array( 'item_name' => $p_item_name
-                   , 'item_price' => $p_item_price
-                   );
-    $filter = array( 'item_id' => $p_item_id );
-    
-   
-   if( update($conn, $table, $fields, $filter )){
-       header("location: index.php?update_status=success");
-       exit();
-   }
-    else{
-        header("location: index.php?update_status=failed");
-        exit();
-    }
- }
+$stmt = mysqli_stmt_init($conn);
+if (!mysql_stmt_prepare($stmt, $sql)){
+    echo "Erro:" .mysql_error($conn);
+    exit();
+}
+
+mysqli_stmt_bind_param($stmt, "ss", 
+$item_name, $item_price);
+
+if (mysqli_stmt_execute($stmt)){
+   //Redirect to the index page 
+   header('Location: index.php');
+} else {
+  echo "Error:" .mysql_error($conn);
+}
+
 ?>
